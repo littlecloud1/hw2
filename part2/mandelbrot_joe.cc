@@ -91,7 +91,7 @@ main (int argc, char* argv[])
     MPI_Gather(sentdata,N*width,MPI_DOUBLE,recvdata+ p*N, N*width, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     
     if(p == 0){
-        print("Joe's algorithm time: %lf :",MPI_Wtime()-Jtime);
+        printf("Joe's algorithm time: %lf :",MPI_Wtime()-Jtime);
         /*Calculating Joe's algorithm*/
         
         //rendering image
