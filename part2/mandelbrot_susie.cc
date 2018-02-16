@@ -11,6 +11,7 @@ int
 main (int argc, char* argv[])
 {
   /* Lucky you, you get to write MPI code */
+	/*Thanks .*/
 }
 
 /* eof */
