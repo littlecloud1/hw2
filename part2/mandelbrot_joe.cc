@@ -3,6 +3,9 @@
  *
  *  \brief Implement your parallel mandelbrot set in this file.
  */
+Yuan Qin
+Lai Man Tang
+
 
 #include <iostream>
 #include <cstdlib>
