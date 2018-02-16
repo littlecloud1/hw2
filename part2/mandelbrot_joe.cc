@@ -75,7 +75,7 @@ main (int argc, char* argv[])
     if(p == 0){
         recvdata = (double*)malloc(height *width *sizeof(double));
     }
-    double *sentdata =(double*)malloc(N *width *sizeof(double));
+    sentdata =(double*)malloc(N *width *sizeof(double));
     
     y = minY + p*N + it;
     
