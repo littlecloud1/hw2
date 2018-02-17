@@ -49,7 +49,7 @@ main(int argc, char* argv[])
     double Stime = MPI_Wtime();
     
     if (p == 0) {
-        master();
+        master(P, height, width, minX, minY);
     }else{
         slave(width,minX,jt,minY,it);
         
@@ -58,24 +58,88 @@ main(int argc, char* argv[])
     MPI_Finalize();
     return 0;
 }
-void master(){
-    s
+void master(int P, int height, int width, double minX, double minY){
+    
+	double MStime = MPI_Wtime();
+
+	int* resultBuff = (int*)malloc(height*weight*sizeof(int));
+
+	MPI_Status status;
+	int* recvdata = (int*)malloc((width+1) * sizeof(int));
+	int  nextRow = 0;
+
+	/*
+	* Seed the slaves.
+	*/
+	for (int i = 1; i < P; i++) {
+		MPI_Send(&nextRow, 1, MPI_INT, i, WORK_TAGm MPI_COMM_WORLD);
+		nextRow++;
+	}
+
+	/*
+	* Receive a result from any slave and dispatch a new work
+	* request work requests have been exhausted.
+	*/
+	while (nexRow < height) {
+		MPI_Recv(recvdata, width + 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+		int p = status.MPI_SOURCE;
+		MPI_Send(&nextRow, 1, MPI_INT, p, WORK_TAG, MPI_COMM_WORLD);
+		int currRow = recvdata[width];
+		memcpy(resultBuff + currRow * width, recvdata, width* sizeof(int));
+		nextRow++;
+
+	}
+
+	/*
+	* Receive results for outstanding work requests and Tell all the slaves to exit.
+	*/
+
+	for (int i = 1; i < P; i++) {
+		MPI_Recv(recvdata, width + 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+		int p = status.MPI_SOURCE;
+		MPI_Send(&nextRow, 1, MPI_INT, p, DIE_TAG, MPI_COMM_WORLD);
+		int currRow = recvdata[width];
+		memcpy(resultBuff + currRow* width, recvdata, width* sizeof(int));
+	
+	}
+
+	printf("MS's algorithm time: %lf :", MPI_Wtime() - MStime);
+
+	//rendering image
+	gil::rgb8_image_t img(height, width);
+	auto img_view = gil::view(img);
+
+
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
+			img_view(j, i) = render(resultBuff[i*width + j] / 512.0);
+		}
+	}
+
+
+
+	gil::png_write_view("mandelbrot_susie.png", const_view(img));
+
+
 }
+
+
+
 void slave(int width, double minX, double jt, double minY, double it){
     int sentdata[width+1];
     MPI_Status status;
-    int nextrow;
+    int nextRow;
     while(true){
-        MPI_Recv(&nextrow, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        MPI_Recv(&nextRow, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         
         if(status.MPI_TAG == DIE_TAG){return;}
         else{
-            double y = minY +nextrow*it;
+            double y = minY +nextRow*it;
             for(int i =0,double x =minX;i<width; i++){
                 sentdata[i] = mandelbrot(x,y);
                 x = x+jt;
             }
-            sentdata[width] = nextrow;
+            sentdata[width] = nextRow;
             MPI_Send(sentdata, width+1,MPI_INT,0,WORK_TAG,MPI_COMM_WORLD);
         }
     }
