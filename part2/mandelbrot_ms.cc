@@ -6,8 +6,38 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <mpi.h>
+#include "render.hh"
+
 #define DIE_TAG 2
 #define WORK_TAG 1
+
+using namespace std;
+
+
+#define WIDTH 1000
+#define HEIGHT 1000
+
+int
+mandelbrot(double x, double y) {
+	int maxit = 511;
+	double cx = x;
+	double cy = y;
+	double newx, newy;
+
+	int it = 0;
+	for (it = 0; it < maxit && (x*x + y*y) < 4; ++it) {
+		newx = x*x - y*y + cx;
+		newy = 2 * x*y + cy;
+		x = newx;
+		y = newy;
+	}
+	return it;
+}
+
+
+
+void master(int P, int height, int width, double minX, double minY);
 void slave(int width, double minX, double jt, double minY, double it);
 
 int
@@ -58,6 +88,8 @@ main(int argc, char* argv[])
     MPI_Finalize();
     return 0;
 }
+
+
 void master(int P, int height, int width, double minX, double minY){
     
 	double MStime = MPI_Wtime();
