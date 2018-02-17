@@ -62,10 +62,10 @@ main (int argc, char* argv[])
     /*MPI section*/
     int p, P, N;
     double *recvdata = NULL;
-    double *sentdata = NULL;
+    //double *sentdata = NULL;
 
     
-    MPI_Init(NULL, NULL);
+    MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &p);
     MPI_Comm_size(MPI_COMM_WORLD, &P);
     
@@ -75,7 +75,7 @@ main (int argc, char* argv[])
     if(p == 0){
         recvdata = (double*)malloc(height *width *sizeof(double));
     }
-    sentdata =(double*)malloc(N *width *sizeof(double));
+    double *:sentdata =(double*)malloc(N *width *sizeof(double));
     
     y = minY + p*N + it;
     
