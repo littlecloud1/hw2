@@ -78,13 +78,15 @@ main (int argc, char* argv[])
     double *sentdata =(double*)malloc(N *width *sizeof(double));
     
     y = minY + p*N * it;
-    
-    for (int i = p*N; i < (p+1)*N; ++i) {
+    int count =0;
+    for (int i = p*N; i < (p+1)*N; i++) {
         x = minX;
-        for (int j = 0; j < width; ++j) {
-            sentdata[width*j+j] = mandelbrot(x,y)/512.0;
+        
+        for (int j = 0; j < width; j++) {
+            sentdata[count+j] = mandelbrot(x,y)/512.0;
             x += jt;
         }
+        count+=width;
         y += it;
     }
     MPI_Barrier(MPI_COMM_WORLD);
