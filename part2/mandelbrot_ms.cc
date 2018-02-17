@@ -36,7 +36,7 @@ main(int argc, char* argv[])
     
     
     /*MPI section*/
-    int p, P；
+	int p, P;
     double *recvdata;
     //double *sentdata ;
     
