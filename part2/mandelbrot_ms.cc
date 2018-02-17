@@ -104,7 +104,7 @@ void master(int P, int height, int width, double minX, double minY){
 	* Seed the slaves.
 	*/
 	for (int i = 1; i < P; i++) {
-		MPI_Send(&nextRow, 1, MPI_INT, i, WORK_TAGm MPI_COMM_WORLD);
+		MPI_Send(&nextRow, 1, MPI_INT, i, WORK_TAG, MPI_COMM_WORLD);
 		nextRow++;
 	}
 
@@ -112,7 +112,7 @@ void master(int P, int height, int width, double minX, double minY){
 	* Receive a result from any slave and dispatch a new work
 	* request work requests have been exhausted.
 	*/
-	while (nexRow < height) {
+	while (nextRow < height) {
 		MPI_Recv(recvdata, width + 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 		int p = status.MPI_SOURCE;
 		MPI_Send(&nextRow, 1, MPI_INT, p, WORK_TAG, MPI_COMM_WORLD);
@@ -167,7 +167,8 @@ void slave(int width, double minX, double jt, double minY, double it){
         if(status.MPI_TAG == DIE_TAG){return;}
         else{
             double y = minY +nextRow*it;
-            for(int i =0,double x =minX;i<width; i++){
+			double x = minX;
+			for (int i = 0; i < width; i++) {
                 sentdata[i] = mandelbrot(x,y);
                 x = x+jt;
             }
