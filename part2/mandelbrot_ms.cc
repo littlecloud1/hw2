@@ -75,7 +75,6 @@ main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &p);
     MPI_Comm_size(MPI_COMM_WORLD, &P);
     
-    N = height / P;
     double Stime = MPI_Wtime();
     
     if (p == 0) {
@@ -94,7 +93,7 @@ void master(int P, int height, int width, double minX, double minY){
     
 	double MStime = MPI_Wtime();
 
-	int* resultBuff = (int*)malloc(height*weight*sizeof(int));
+	int* resultBuff = (int*)malloc(height*width*sizeof(int));
 
 	MPI_Status status;
 	int* recvdata = (int*)malloc((width+1) * sizeof(int));
