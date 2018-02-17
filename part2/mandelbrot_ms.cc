@@ -6,7 +6,9 @@
 
 #include <iostream>
 #include <cstdlib>
-
+#define DIE_TAG 2
+#define WORK_TAG 1
+void slave(int width, double minX, double jt, double minY, double it);
 
 int
 main(int argc, char* argv[])
@@ -49,16 +51,34 @@ main(int argc, char* argv[])
     if (p == 0) {
         master();
     }else{
-        slave();
+        slave(width,minX,jt,minY,it);
         
     }
     
     MPI_Finalize();
     return 0;
 }
-
-void slave(){
-    int
+void master(){
+    s
+}
+void slave(int width, double minX, double jt, double minY, double it){
+    int sentdata[width+1];
+    MPI_Status status;
+    int nextrow;
+    while(true){
+        MPI_Recv(&nextrow, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        
+        if(status.MPI_TAG == DIE_TAG){return;}
+        else{
+            double y = minY +nextrow*it;
+            for(int i =0,double x =minX;i<width; i++){
+                sentdata[i] = mandelbrot(x,y);
+                x = x+jt;
+            }
+            sentdata[width] = nextrow;
+            MPI_Send(sentdata, width+1,MPI_INT,0,WORK_TAG,MPI_COMM_WORLD);
+        }
+    }
 }
 
 /* eof */
