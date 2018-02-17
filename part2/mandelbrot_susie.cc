@@ -79,7 +79,7 @@ main(int argc, char* argv[])
 	double *sentdata = (double*)malloc(width *sizeof(double));
 
 	y = minY + p* it;
-	for (int i = p; i < N * size;) {
+	for (int i = p; i < N * P;) {
 		x = minX;
 
 		for (int j = 0; j < width; j++) {
