@@ -105,6 +105,17 @@ main (int argc, char* argv[])
             }
         }
         
+        y = minY + P * N * it;
+        for (int i = P * N; i < height; i++) {
+            x = minX;
+            for (int j = 0; j < width; j++) {
+                img_view(j, i) = render(mandelbrot(x, y) / 512.0);
+                x += jt;
+            }
+            y += it;
+            
+        }
+
         
         
         gil::png_write_view("mandelbrot_joe.png", const_view(img));
