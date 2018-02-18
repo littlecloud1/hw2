@@ -62,12 +62,12 @@ main(int argc, char* argv[])
     
     double it = (maxY - minY) / height;
     double jt = (maxX - minX) / width;
-    double x, y;
+
     
     
     /*MPI section*/
 	int p, P;
-    double *recvdata;
+    //double *recvdata;
     //double *sentdata ;
     
     
@@ -149,7 +149,7 @@ void master(int P, int height, int width, double minX, double minY){
 
 
 
-	gil::png_write_view("mandelbrot_susie.png", const_view(img));
+	gil::png_write_view("mandelbrot_ms.png", const_view(img));
 
 
 }
@@ -160,13 +160,14 @@ void slave(int width, double minX, double jt, double minY, double it){
     int sentdata[width+1];
     MPI_Status status;
     int nextRow;
+    double x,y;
     while(true){
         MPI_Recv(&nextRow, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         
         if(status.MPI_TAG == DIE_TAG){return;}
         else{
-            double y = minY +nextRow*it;
-			double x = minX;
+            y = minY +nextRow*it;
+			x = minX;
 			for (int i = 0; i < width; i++) {
                 sentdata[i] = mandelbrot(x,y);
                 x = x+jt;
