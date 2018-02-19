@@ -1,5 +1,5 @@
 /**
-*  \file mandelbrot_joe.cc
+*  \file mandelbrot_susie.cc
 *
 *  \brief Implement your parallel mandelbrot set in this file.
 */
